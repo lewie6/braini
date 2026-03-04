@@ -5,85 +5,370 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mission Control</title>
 <style>
-:root{--bg:#0d0d0d;--bg2:#161616;--bg3:#1e1e1e;--border:#2a2a2a;--text:#e5e5e5;--text2:#888;--accent:#5e6ad2;--success:#2ea043;--warning:#d29922;--danger:#f85149;--purple:#a371f7}
+:root{--bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--bg4:#222;--border:#2a2a2a;--border2:#333;--text:#e5e5e5;--text2:#888;--text3:#555;--accent:#5e6ad2;--accent2:#7075ff;--success:#2ea043;--warning:#d29922;--danger:#f85149;--purple:#a371f7;--cyan:#39c5cf}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh}
-.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column}
-.logo{padding:20px;font-size:18px;font-weight:600;color:var(--accent);border-bottom:1px solid(var(--border);display:flex;align-items:center;gap:8px}
-.logo-icon{width:24px;height:24px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:6px;display:flex;align-items:center;justify-content:center}
-.nav{flex:1;padding:12px 0}
-.nav-item{padding:10px 20px;cursor:pointer;color:var(--text2);transition:.15s;font-size:14px;border-left:2px solid transparent}
-.nav-item:hover,.nav-item.active{background:var(--bg3);color:var(--text)}
-.nav-item.active{border-left-color:var(--accent)}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
+.sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.logo{padding:24px 20px;font-size:16px;font-weight:600;color:var(--text);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.nav{flex:1;padding:16px 0;overflow-y:auto}
+.nav-section{padding:8px 16px;font-size:10px;text-transform:uppercase;color:var(--text3);font-weight:600;letter-spacing:1px}
+.nav-item{padding:10px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;color:var(--text2);transition:all .15s;font-size:13px;border-radius:6px;margin:2px 8px}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--bg3);color:var(--text)}
+.nav-item.active .nav-icon{color:var(--accent)}
+.nav-icon{font-size:16px;width:20px;text-align:center}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.header{padding:20px 30px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.header h1{font-size:20px;font-weight:600}
-.btn{background:var(--accent);color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500}
-.btn:hover{background:#6f7cf2}
-.content{flex:1;padding:30px;overflow-y:auto}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:30px}
-.stat{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
-.stat-value{font-size:28px;font-weight:600}
-.stat-label{font-size:12px;color:var(--text2);margin-top:4px}
+.header{padding:24px 32px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--bg)}
+.header h1{font-size:22px;font-weight:600}
+.header-actions{display:flex;gap:12px}
+.btn{background:var(--accent);color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;transition:all .15s;display:flex;align-items:center;gap:6px}
+.btn:hover{background:var(--accent2)}
+.btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--bg4)}
+.btn-small{padding:6px 12px;font-size:12px}
+.content{flex:1;padding:32px;overflow-y:auto;background:var(--bg)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;transition:all .15s}
+.stat:hover{border-color:var(--accent)}
+.stat-value{font-size:32px;font-weight:700;margin-bottom:4px}
+.stat-label{font-size:13px;color:var(--text2)}
+.stat.accent{border-color:var(--accent)}
 .stat.accent .stat-value{color:var(--accent)}
+.stat.success .stat-value{color:var(--success)}
+.stat.purple .stat-value{color:var(--purple)}
 .kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.kanban-col{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:350px}
+.kanban-col{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;min-height:400px}
 .kanban-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-.kanban-header h4{font-size:12px;font-weight:600;text-transform:uppercase;color:var(--text2)}
-.kanban-count{background:var(--bg3);padding:2px 8px;border-radius:10px;font-size:11px;color:var(--text2)}
-.task{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:8px;cursor:pointer;transition:.15s}
-.task:hover{border-color:var(--accent);transform:translateY(-1px)}
+.kanban-header h4{font-size:12px;font-weight:600;text-transform:uppercase;color:var(--text2);letter-spacing:.5px}
+.kanban-count{background:var(--bg3);padding:4px 10px;border-radius:12px;font-size:11px;color:var(--text2);font-weight:500}
+.task{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.task:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .task-priority{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px}
-.task-priority.high{background:var(--danger)}.task-priority.medium{background:var(--warning)}.task-priority.low{background:var(--success)}
-.task-title{font-size:13px;font-weight:500;margin-bottom:8px}
-.task-meta{font-size:11px;color:var(--text2)}
+.task-priority.high{background:var(--danger)}
+.task-priority.medium{background:var(--warning)}
+.task-priority.low{background:var(--success)}
+.task-title{font-size:14px;font-weight:500;margin-bottom:8px;line-height:1.4}
+.task-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--text2)}
+.task-assignee{background:var(--bg);padding:2px 8px;border-radius:4px}
 .section{display:none}
 .section.active{display:block}
 .projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-.project{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px}
-.project h4{font-size:15px;font-weight:600;margin-bottom:8px}
-.project p{font-size:13px;color:var(--text2);margin-bottom:16px}
-.progress-bar{height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+.project{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;transition:all .15s}
+.project:hover{border-color:var(--accent)}
+.project h4{font-size:16px;font-weight:600;margin-bottom:8px}
+.project p{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5}
+.progress-bar{height:8px;background:var(--bg);border-radius:4px;overflow:hidden;margin-bottom:12px}
 .progress-fill{height:100%;background:var(--success);transition:width .3s}
 .progress-fill.medium{background:var(--warning)}
-.project-stats{font-size:12px;color:var(--text2);margin-top:12px}
-.mission-box{background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:12px;padding:30px;margin-bottom:30px}
-.mission-box h3{color:rgba(255,255,255,.7);font-size:12px;text-transform:uppercase;margin-bottom:10px}
-.mission-box p{font-size:20px;font-weight:500}
-.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.agent{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
-.agent-avatar{width:56px;height:56px;border-radius:50%;background:var(--accent);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600}
+.progress-fill.low{background:var(--accent)}
+.project-stats{display:flex;gap:16px;font-size:12px;color:var(--text2)}
+.mission-box{background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:16px;padding:32px;margin-bottom:32px}
+.mission-box h3{color:rgba(255,255,255,.7);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.mission-box p{font-size:20px;font-weight:500;line-height:1.6}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.agent{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;transition:all .15s}
+.agent:hover{border-color:var(--accent)}
+.agent-avatar{width:64px;height:64px;border-radius:50%;background:var(--accent);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600}
 .agent-avatar.henry{background:var(--purple)}
-.agent-avatar.idle{background:var(--bg)}
-.agent h4{font-size:15px;margin-bottom:4px}
-.agent p{font-size:12px;color:var(--text2);margin-bottom:8px}
-.agent-status{display:inline-flex;align-items:center;gap:6px;font-size:11px}
+.agent-avatar.idle{background:var(--bg3)}
+.agent h4{font-size:15px;font-weight:600;margin-bottom:4px}
+.agent p{font-size:12px;color:var(--text2);margin-bottom:12px}
+.agent-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:4px 10px;background:var(--bg3);border-radius:12px}
 .status-dot{width:8px;height:8px;border-radius:50%;background:var(--success)}
-.status-dot.idle{background:var(--text2)}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border)}
-.calendar-day{background:var(--bg2);padding:12px;min-height:80px}
-.calendar-day .date{font-size:12px;font-weight:600;margin-bottom:8px;color:var(--text2)}
-.calendar-event{background:var(--accent);color:#fff;padding:4px 8px;border-radius:4px;font-size:10px;margin-bottom:4px}
-.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);align-items:center;justify-content:center;z-index:100}
-.modal.active{display:flex}
-.modal-content{background:var(--bg2);border-radius:12px;padding:30px;width:400px;max-width:90%}
-.modal h3{margin-bottom:20px}
-.form-group{margin-bottom:15px}
-.form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px}
-.form-group input,.form-group textarea,.form-group select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;color:var(--text);font-size:14px}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.status-dot.idle{background:var(--text3)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text2)}
+.empty-state-icon{font-size:48px;margin-bottom:16px;opacity:.5}
+.empty-state p{font-size:14px}
+.calendar{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px}
+.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.calendar-header h3{font-size:16px;font-weight:600}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.calendar-day-name{font-size:11px;text-transform:uppercase;color:var(--text3);text-align:center;padding:8px}
+.calendar-day{background:var(--bg3);border-radius:8px;padding:8px;min-height:80px;font-size:12px}
+.calendar-day .date{font-weight:600;margin-bottom:8px;color:var(--text2)}
+.calendar-day.today{border:1px solid var(--accent)}
+.calendar-event{background:var(--accent);color:#fff;padding:4px 8px;border-radius:4px;font-size:10px;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text2)}
+.loading-spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <div class="sidebar">
 <div class="logo"><div class="logo-icon">🎯</div>Mission Control</div>
 <div class="nav">
-<div class="nav-item active" data-s="overview">📊 Overview</div>
-<div class="nav-item" data-s="tasks">📋 Tasks</div>
-<div class="nav-item" data-s="calendar">📅 Calendar</div>
-<div class="nav-item" data-s="projects">📁 Projects</div>
-<div class="nav-item" data-s="team">👥 Team</div>
+<div class="nav-section">General</div>
+<div class="nav-item active" data-section="overview"><span class="nav-icon">📊</span> Overview</div>
+<div class="nav-section">Work</div>
+<div class="nav-item" data-section="tasks"><span class="nav-icon">📋</span> Tasks</div>
+<div class="nav-item" data-section="calendar"><span class="nav-icon">📅</span> Calendar</div>
+<div class="nav-item" data-section="projects"><span class="nav-icon">📁</span> Projects</div>
+<div class="nav-section">Team</div>
+<div class="nav-item" data-section="team"><span class="nav-icon">👥</span> Team</div>
 </div>
 </div>
+
 <div class="main">
-<div class="header"><h1 id="page-title">Overview</h1><d, 
+<div class="header">
+<h1 id="page-title">Overview</h1>
+<div class="header-actions">
+<button class="btn btn-secondary" onclick="refreshData()"><span>↻</span> Refresh</button>
+</div>
+</div>
+
+<div class="content">
+<!-- Overview Section -->
+<div class="section active" id="overview">
+<div class="stats" id="stats-grid">
+<div class="stat"><div class="stat-value" id="stat-tasks">-</div><div class="stat-label">Total Tasks</div></div>
+<div class="stat success"><div class="stat-value" id="stat-done">-</div><div class="stat-label">Completed</div></div>
+<div class="stat accent"><div class="stat-value" id="stat-progress">-</div><div class="stat-label">In Progress</div></div>
+<div class="stat purple"><div class="stat-value" id="stat-projects">-</div><div class="stat-label">Projects</div></div>
+</div>
+
+<div class="mission-box">
+<h3>Mission Statement</h3>
+<p id="mission-statement">Build an autonomous organization of AI agents that produce value 24/7.</p>
+</div>
+
+<h2 style="font-size:16px;margin-bottom:16px;font-weight:600">Recent Activity</h2>
+<div id="recent-activity" class="loading"><div class="loading-spinner"></div></div>
+</div>
+
+<!-- Tasks Section -->
+<div class="section" id="tasks">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+<h2 style="font-size:18px;font-weight:600">Task Board</h2>
+<button class="btn" onclick="openTaskModal()">+ New Task</button>
+</div>
+<div class="kanban" id="kanban-board">
+<div class="kanban-col"><div class="kanban-header"><h4>Backlog</h4><span class="kanban-count" id="count-backlog">0</span></div><div id="backlog"></div></div>
+<div class="kanban-col"><div class="kanban-header"><h4>In Progress</h4><span class="kanban-count" id="count-progress">0</span></div><div id="progress"></div></div>
+<div class="kanban-col"><div class="kanban-header"><h4>Review</h4><span class="kanban-count" id="count-review">0</span></div><div id="review"></div></div>
+<div class="kanban-col"><div class="kanban-header"><h4>Done</h4><span class="kanban-count" id="count-done">0</span></div><div id="done"></div></div>
+</div>
+</div>
+
+<!-- Calendar Section -->
+<div class="section" id="calendar">
+<div class="calendar">
+<div class="calendar-header"><h3 id="calendar-month">March 2026</h3></div>
+<div class="calendar-grid">
+<div class="calendar-day-name">Mon</div><div class="calendar-day-name">Tue</div><div class="calendar-day-name">Wed</div><div class="calendar-day-name">Thu</div><div class="calendar-day-name">Fri</div><div class="calendar-day-name">Sat</div><div class="calendar-day-name">Sun</div>
+<div id="calendar-days"></div>
+</div>
+</div>
+</div>
+
+<!-- Projects Section -->
+<div class="section" id="projects">
+<h2 style="font-size:18px;font-weight:600;margin-bottom:20px">Projects</h2>
+<div class="projects-grid" id="projects-grid"></div>
+</div>
+
+<!-- Team Section -->
+<div class="section" id="team">
+<h2 style="font-size:18px;font-weight:600;margin-bottom:20px">Team</h2>
+<div class="team-grid" id="team-grid"></div>
+</div>
+</div>
+</div>
+
+<!-- Task Modal -->
+<div class="modal" id="task-modal">
+<div class="modal-content">
+<h3>Add New Task</h3>
+<div class="form-group"><label>Title</label><input type="text" id="task-title" placeholder="Enter task title"></div>
+<div class="form-group"><label>Priority</label><select id="task-priority"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select></div>
+<div class="form-group"><label>Assignee</label><select id="task-assignee"><option value="user">Me</option><option value="henry">Henry (AI)</option></select></div>
+<div class="modal-actions"><button class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button><button class="btn" onclick="addTask()">Add Task</button></div>
+</div>
+</div>
+
+<script>
+let tasks = [];
+let projects = [];
+
+async function fetchAPI(endpoint) {
+  try {
+    const res = await fetch('/api' + endpoint);
+    return await res.json();
+  } catch (e) {
+    console.error('API error:', e);
+    return null;
+  }
+}
+
+async function refreshData() {
+  const [tasksData, projectsData] = await Promise.all([
+    fetchAPI('/tasks'),
+    fetchAPI('/projects')
+  ]);
+  
+  if (tasksData) tasks = tasksData.tasks || [];
+  if (projectsData) projects = projectsData.projects || [];
+  
+  updateUI();
+}
+
+function updateUI() {
+  updateStats();
+  updateTasks();
+  updateProjects();
+  updateTeam();
+  updateCalendar();
+}
+
+function updateStats() {
+  const backlog = tasks.filter(t => t.status === 'backlog').length;
+  const progress = tasks.filter(t => t.status === 'in-progress').length;
+  const review = tasks.filter(t => t.status === 'review').length;
+  const done = tasks.filter(t => t.status === 'done').length;
+  
+  document.getElementById('stat-tasks').textContent = tasks.length;
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-progress').textContent = progress;
+  document.getElementById('stat-projects').textContent = projects.length;
+}
+
+function updateTasks() {
+  const cols = { backlog: [], 'in-progress': [], review: [], done: [] };
+  tasks.forEach(t => cols[t.status] ? cols[t.status].push(t) : cols.backlog.push(t));
+  
+  Object.keys(cols).forEach(status => {
+    const el = document.getElementById(status === 'in-progress' ? 'progress' : status);
+    el.innerHTML = cols[status].length ? cols[status].map(t => `
+      <div class="task" onclick="moveTask(${t.id})">
+        <div class="task-title"><span class="task-priority ${t.priority || 'medium'}"></span>${escapeHtml(t.title)}</div>
+        <div class="task-meta">
+          <span class="task-assignee">${t.assignee === 'henry' ? 'H' : 'A'}</span>
+          <span>${t.priority || 'medium'}</span>
+        </div>
+      </div>
+    `).join('') : '<div class="empty-state"><p>No tasks</p></div>';
+    
+    const countId = status === 'in-progress' ? 'progress' : status;
+    document.getElementById('count-' + countId).textContent = cols[status].length;
+  });
+}
+
+function updateProjects() {
+  const el = document.getElementById('projects-grid');
+  el.innerHTML = projects.length ? projects.map(p => `
+    <div class="project">
+      <h4>${escapeHtml(p.name)}</h4>
+      <p>${escapeHtml(p.description || 'No description')}</p>
+      <div class="progress-bar"><div class="progress-fill" style="width:${p.progress || 0}%"></div></div>
+      <div class="project-stats"><span>${p.progress || 0}% complete</span></div>
+    </div>
+  `).join('') : '<div class="empty-state"><div class="empty-state-icon">📁</div><p>No projects yet</p></div>';
+}
+
+function updateTeam() {
+  const agents = [
+    { name: 'Henry', role: 'Main Agent', status: 'active', initial: 'H' },
+    { name: 'Charlie', role: 'Engineer', status: 'idle', initial: 'C' },
+    { name: 'Violet', role: 'Research', status: 'active', initial: 'V' }
+  ];
+  
+  const el = document.getElementById('team-grid');
+  el.innerHTML = agents.map(a => `
+    <div class="agent">
+      <div class="agent-avatar ${a.status === 'idle' ? 'idle' : ''} ${a.name === 'Henry' ? 'henry' : ''}">${a.initial}</div>
+      <h4>${a.name}</h4>
+      <p>${a.role}</p>
+      <div class="agent-status"><div class="status-dot ${a.status === 'idle' ? 'idle' : ''}"></div>${a.status}</div>
+    </div>
+  `).join('');
+}
+
+function updateCalendar() {
+  const days = document.getElementById('calendar-days');
+  const today = new Date();
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  const startDay = monthStart.getDay();
+  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calendar-month').textContent = monthNames[today.getMonth()] + ' ' + today.getFullYear();
+  
+  let html = '';
+  for (let i = 0; i < startDay; i++) html += '<div class="calendar-day"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = d === today.getDate();
+    html += `<div class="calendar-day${isToday ? ' today' : ''}"><div class="date">${d}</div></div>`;
+  }
+  days.innerHTML = html;
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+}
+
+async function moveTask(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  
+  const order = ['backlog', 'in-progress', 'review', 'done'];
+  const idx = order.indexOf(task.status);
+  if (idx < order.length - 1) {
+    task.status = order[idx + 1];
+    await fetch('/api/tasks/' + id, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({status: task.status})
+    });
+    updateUI();
+  }
+}
+
+function openTaskModal() {
+  document.getElementById('task-modal').classList.add('active');
+  document.getElementById('task-title').value = '';
+  document.getElementById('task-priority').value = 'medium';
+  document.getElementById('task-assignee').value = 'user';
+}
+
+function closeTaskModal() {
+  document.getElementById('task-modal').classList.remove('active');
+}
+
+async function addTask() {
+  const title = document.getElementById('task-title').value.trim();
+  if (!title) return;
+  
+  const task = {
+    title,
+    priority: document.getElementById('task-priority').value,
+    assignee: document.getElementById('task-assignee').value,
+    status: 'backlog'
+  };
+  
+  await fetch('/api/tasks', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(task)
+  });
+  
+  closeTaskModal();
+  refreshData();
+}
+
+// Navigation
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    item.classList.add('active');
+    const section = item.dataset.section;
+    document.getElementById(section).classList.add('active');
+    document.getElementById('page-title').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+  });
+});
+
+// Initialize
+refreshData();
+</script>
+</body>
+</html>
