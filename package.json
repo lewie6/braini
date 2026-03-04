@@ -1,0 +1,12 @@
+{
+  "name": "mission-control-v2",
+  "version": "2.0.0",
+  "description": "OpenClaw Mission Control Dashboard",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "keywords": ["openclaw", "dashboard"],
+  "author": "",
+  "license": "ISC"
+}
